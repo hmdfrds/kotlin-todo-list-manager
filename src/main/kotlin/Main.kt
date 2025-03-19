@@ -1,8 +1,8 @@
 package org.example.todolist
 
-import org.example.todolist.utils.FileManager
+import org.example.todolist.ui.UIManager
 
 
 fun main() {
-    FileManager.loadTodos()
+    UIManager.displayMainMenu()
 }

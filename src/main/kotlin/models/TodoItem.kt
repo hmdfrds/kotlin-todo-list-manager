@@ -8,6 +8,6 @@ data class TodoItem(
     val id: Int,
     val title: String,
     val description: String? = null,
-    val isComplete: Boolean = false,
+    var isComplete: Boolean = false,
     val createdAt: LocalDateTime,
 )
