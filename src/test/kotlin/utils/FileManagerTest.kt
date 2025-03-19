@@ -3,23 +3,23 @@ package utils
 import kotlinx.datetime.LocalDateTime
 import org.example.todolist.models.TodoItem
 import org.example.todolist.utils.FileManager
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
 import java.io.File
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FileManagerTest {
     private val testFile = File("todos.json")
 
-    @Before
+    @BeforeTest
     fun setUp() {
         if (testFile.exists()) {
             testFile.delete()
         }
     }
 
-    @After
+    @AfterTest
     fun tearDown() {
         if (testFile.exists()) {
             testFile.delete()

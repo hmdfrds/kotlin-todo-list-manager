@@ -1,10 +1,7 @@
 package org.example.todolist.ui
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import org.example.todolist.models.TodoItem
-import org.example.todolist.utils.FileManager
+import org.example.todolist.controller.TodoCommand
+import org.example.todolist.controller.TodoController
 import kotlin.system.exitProcess
 
 object UIManager {
@@ -36,6 +33,11 @@ object UIManager {
                         exitProcess(0)
                     }
                 }
+
+                else -> {
+                    println("\u001B[31mInvalid option. Please try again. \u001B[0m")
+                    Thread.sleep(1500)
+                }
             }
         }
     }
@@ -55,13 +57,8 @@ object UIManager {
         }
         print("Enter the description (optional): ")
         val description = readlnOrNull()?.trim()
-        val todos = FileManager.loadTodos()
-        val newId = if (todos.isEmpty()) 1 else todos.maxOf { it.id } + 1
-        val currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val newTodo = TodoItem(newId, title, description, false, currentTime)
-        todos.add(newTodo)
-        FileManager.saveTodos(todos)
-        println("Todo added successfully!")
+        val result = TodoController.processCommand(TodoCommand.AddTodo(title, description))
+        println(result)
         println("Press Enter to return to the main menu...")
         readlnOrNull()
     }
@@ -71,19 +68,8 @@ object UIManager {
         println("-------------------------------------")
         println("            Todo List")
         println("-------------------------------------")
-        val todos = FileManager.loadTodos()
-        if (todos.isEmpty()) {
-            println("No todos available.")
-        } else {
-            println("ID   | Title                 | Status     | Created At")
-            println("-------------------------------------------------------")
-            todos.forEach { todo ->
-                val status = if (todo.isComplete) "Completed" else "Pending"
-                val createdAtStr = todo.createdAt.toString().substring(0, 16)
-                println(String.format("%4d | $-20s | %-10s | %s", todo.id, todo.title, status, createdAtStr))
-            }
-            println("-------------------------------------------------------")
-        }
+        val result = TodoController.processCommand(TodoCommand.ListTodos)
+        println(result)
         println("Press Enter to return to the main menu...")
         readlnOrNull()
     }
@@ -102,15 +88,8 @@ object UIManager {
             readlnOrNull()
             return
         }
-        val todos = FileManager.loadTodos()
-        val todo = todos.find { it.id == id }
-        if (todo == null) {
-            println("\u001B[31Todo with ID $id not found. \u001B[0m")
-        } else {
-            todo.isComplete = true
-            FileManager.saveTodos(todos)
-            println("Todo marked as completed!")
-        }
+        val result = TodoController.processCommand(TodoCommand.MarkTodoCompleted(id))
+        println(result)
         println("Press Enter to return to the main menu...")
         readlnOrNull()
     }
@@ -129,15 +108,8 @@ object UIManager {
             readlnOrNull()
             return
         }
-        val todos = FileManager.loadTodos()
-        val todo = todos.find { it.id == id }
-        if (todo == null) {
-            println("\u001B[31Todo with ID $id not found. \u001B[0m")
-        } else {
-            todos.remove(todo)
-            FileManager.saveTodos(todos)
-            println("Todo removed successfully!")
-        }
+        val result = TodoController.processCommand(TodoCommand.RemoveTodo(id))
+        println(result)
         println("Press Enter to return to the main menu...")
         readlnOrNull()
     }
