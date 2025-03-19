@@ -21,7 +21,7 @@ dependencies {
 
 application {
     mainClass.set("org.example.todolist.MainKt")
-}
+};
 
 tasks.test {
     useJUnitPlatform()
